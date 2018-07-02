@@ -11,7 +11,7 @@ app.use(cors())
 app.use(morgan("dev"))
 app.use('/auth', require('./routes/auth'));
 app.use('/users', require('./routes/users'))
-app.use('/cities', require('./routes/recipies'))
+
 
 app.use((req, res) => {
     const status = 404;

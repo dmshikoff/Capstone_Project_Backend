@@ -1,11 +1,18 @@
 const express = require('express')
-const router = express.Router()
+const ingredientsRouter = require('./ingredients')
+const recipesRouter = require('./recipes')
+const plansRouter = require('./plans')
 const controller = require('../controllers/users')
 
-
+const router = express.Router({mergeParams:true})
 
 router.get('/:usersId/', controller.getOne)
 router.post('/', controller.create)
 router.delete('/:usersId', controller.remove)
+
+router.use('/:usersId/ingredients', ingredientsRouter)
+router.use('/:usersId/recipes', recipesRouter)
+router.use('/:usersId/plans', plansRouter)
+
 
 module.exports = router

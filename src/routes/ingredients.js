@@ -1,11 +1,11 @@
 const express = require('express');
-const router = express.Router();
 const controller = require('../controllers/ingredients');
+const router = express.Router();
 
-router.get('users/:userId/', controller.getAll);
-router.get('users/:userId/ingredients/:ingredientId', controller.getOne);
-router.post('users/:userId/', controller.create);
-router.put('users/:userId/ingredients/:ingredientId', controller.update);
-router.delete('users/:userId/ingredients/:ingredientId', controller.remove);
+router.get('/', controller.getAll);
+router.get('/:ingredientId', controller.getOne);
+router.post('/', controller.create);
+router.put('/:ingredientId', controller.update);
+router.delete('/:ingredientId', controller.remove);
 
 module.exports = router;

@@ -1,12 +1,13 @@
-const ingredientsModel = require('../models/ingredients');
+const ingredientModel = require('../models/ingredients');
 
 function getAll(req, res, next) {
-    ingredientModel.getAll(req.params.ingredientId)
+    ingredientModel.getAll(req.params.usersId)
         .then(allIngredients => {
             res.status(200).send({
                 allIngredients
             })
         })
+        .catch(next)
 }
 
 function getOne(req, res, next) {
@@ -51,7 +52,7 @@ function update(req, res, next) {
             message: 'Bad Request'
         })
     }
-    ingredientModel.update(req.params.ingredientId, req.body.name, req.body.quantity, req.body.units)
+    ingredientModel.update(parseInt(req.params.ingredientId), req.body.name, req.body.quantity, req.body.units)
         .then(recipe => {
             res.status(200).send({
                 recipe

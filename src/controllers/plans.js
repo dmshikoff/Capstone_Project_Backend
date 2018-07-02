@@ -1,7 +1,7 @@
-const plansModel = require('../models/plans');
+const planModel = require('../models/plans');
 
 function getAll(req, res, next) {
-    planModel.getAll(req.params.planId)
+    planModel.getAll(req.params.usersId)
         .then(allPlans => {
             res.status(200).send({
                 allPlans
@@ -51,7 +51,7 @@ function update(req, res, next) {
             message: 'Bad Request'
         })
     }
-    planModel.update(req.body.name)
+    planModel.update(parseInt(req.params.planId), req.body.name)
         .then(recipe => {
             res.status(200).send({
                 recipe

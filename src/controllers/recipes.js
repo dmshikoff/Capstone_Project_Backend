@@ -10,13 +10,13 @@ function getAll(req, res, next) {
 }
 
 function getOne(req, res, next) {
-    if (!req.params.usersId) {
+    if (!req.params.recipeId) {
         return next({
             status: 400,
             message: 'Bad Request'
         })
     }
-    recipeModel.getOne(req.params.usersId)
+    recipeModel.getOne(req.params.recipeId)
         .then(data => {
             delete data.password
             res.status(200).send({

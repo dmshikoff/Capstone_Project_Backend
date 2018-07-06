@@ -6,9 +6,15 @@ exports.seed = function(knex, Promise) {
     .then(function () {
       // Inserts seed entries
       return knex(TABLE_NAME).insert([
-        {id: 1, name: "flour", quantity: 2, units: "pounds", user_id: 1},
-        {id: 2, name: "sugar", quantity: 3, units: "pounds", user_id: 2},
-        {id: 3, name: "rice", quantity: 4, units: "pounds", user_id: 3}
+        {id: 1, name: "flour", units: "pounds", user_id: 1},
+        {id: 2, name: "sugar", units: "pounds", user_id: 1},
+        {id: 3, name: "rice", units: "pounds", user_id: 1},
+        {id: 4, name: "flour", units: "pounds", user_id: 2},
+        {id: 5, name: "sugar", units: "pounds", user_id: 2},
+        {id: 6, name: "rice", units: "pounds", user_id: 2},
+        {id: 7, name: "flour", units: "pounds", user_id: 3},
+        {id: 8, name: "sugar", units: "pounds", user_id: 3},
+        {id: 9, name: "rice", units: "pounds", user_id: 3}
       ]);
     })
     .then(() => {

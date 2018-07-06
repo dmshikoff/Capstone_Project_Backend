@@ -1,6 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/ingredients');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.get('/', controller.getAll);
 router.get('/:ingredientId', controller.getOne);

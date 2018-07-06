@@ -23,6 +23,7 @@ function getOne(recipeId) {
 }
 
 function create(body) {
+    console.log(body)
     return knex('recipes')
         .insert({
             name: body.name,

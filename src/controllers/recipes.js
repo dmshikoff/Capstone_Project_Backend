@@ -1,7 +1,8 @@
 const recipeModel = require('../models/recipes');
 
 function getAll(req, res, next) {
-    recipeModel.getAll(req.params.recipeId)
+    console.log(req.params)
+    recipeModel.getAll(req.params.usersId)
         .then(allRecipes => {
             res.status(200).send({
                 allRecipes

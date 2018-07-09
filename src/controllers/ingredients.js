@@ -1,7 +1,17 @@
 const ingredientModel = require('../models/ingredients');
 
-function getAll(req, res, next) {
-    ingredientModel.getAll(req.params.recipeId)
+function getAllByRecipe(req, res, next) {
+    ingredientModel.getAllByRecipe(req.params.recipeId)
+        .then(allIngredients => {
+            res.status(200).send({
+                allIngredients
+            })
+        })
+        .catch(next)
+}
+
+function getAllByUser(req, res, next){
+    ingredientModel.getAllByUser(req.params.usersId)
         .then(allIngredients => {
             res.status(200).send({
                 allIngredients
@@ -72,7 +82,8 @@ function remove(req, res, next) {
 }
 
 module.exports = {
-    getAll,
+    getAllByRecipe,
+    getAllByUser,
     getOne,
     create,
     update,

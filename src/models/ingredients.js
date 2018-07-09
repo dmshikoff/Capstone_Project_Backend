@@ -1,6 +1,6 @@
 const knex = require("../../db/knex");
 
-function getAll(recipe_id) {
+function getAllByRecipe(recipe_id) {
     return knex('recipes_ingredients')
         .join("ingredients", "ingredients.id", "recipes_ingredients.ingredient_id")
         .where("recipes_ingredients.recipe_id", recipe_id)
@@ -8,6 +8,17 @@ function getAll(recipe_id) {
         .catch(err => {
             console.log(err)
         })
+}
+
+function getAllByUser(user_id){
+    return knex('users_ingredients')
+        .join('ingredients', 'ingredients.id', 'users_ingredients.ingredient_id')
+        .where('users_ingredients.user_id', user_id)
+        .select("quantity", "name", "units")
+        .catch(err => {
+            console.log(err)
+        })
+
 }
 
 function getOne(ingredientId) {
@@ -71,7 +82,8 @@ function remove(ingredientId) {
 }
 
 module.exports = {
-    getAll,
+    getAllByRecipe,
+    getAllByUser,
     getOne,
     create,
     update,

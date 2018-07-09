@@ -1,11 +1,10 @@
 const knex = require("../../db/knex");
 
-function getAll(usersId) {
-    return knex('ingredients')
-        .where({
-            user_id: usersId
-        })
-        .returning('*')
+function getAll(recipe_id) {
+    return knex('recipes_ingredients')
+        .join("ingredients", "ingredients.id", "recipes_ingredients.ingredient_id")
+        .where("recipes_ingredients.recipe_id", recipe_id)
+        .select("recipes_ingredients.units as units", "quantity", "name")
         .catch(err => {
             console.log(err)
         })

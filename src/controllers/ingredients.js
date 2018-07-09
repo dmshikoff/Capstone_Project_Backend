@@ -1,7 +1,7 @@
 const ingredientModel = require('../models/ingredients');
 
 function getAll(req, res, next) {
-    ingredientModel.getAll(req.params.usersId)
+    ingredientModel.getAll(req.params.recipeId)
         .then(allIngredients => {
             res.status(200).send({
                 allIngredients

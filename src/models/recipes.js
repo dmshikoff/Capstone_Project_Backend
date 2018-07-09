@@ -11,10 +11,11 @@ function getAll(usersId) {
         })
 }
 
-function getOne(recipeId) {
+function getOne(recipeId, usersId) {
     return knex('recipes')
         .where({
-            id: recipeId
+            id: recipeId,
+            user_id: usersId
         })
         .returning('*')
         .catch(err => {
@@ -40,9 +41,6 @@ function createRecipe(body) {
         })
         .returning("*")
         .then(([data])=>data)
-        // .then(response => {
-        //     recipe_id = response.data.id
-        // })
         .catch(err => {
             console.log(err);
         })
@@ -70,26 +68,6 @@ function createRecipeIngredient(recipe_id, body){
             console.log(err)
         })
     })
-
-//    body.ingredientsArray.map(ele => {
-//        if(!ele.id){
-//         return knex('ingredients')
-//             .insert({ name: ele.name, units, units: ele.unit, user_id: body.user_id })
-//             .returning("*")
-//             .then(console.log)
-//             .catch(err => {
-//                 console.log(err);
-//             })
-//         }
-//         else{
-//             return knex('recipes_ingredients')
-//             .insert({ ingredient_id: ele.id, recipe_id: recipe_id, quantity: ele.qty, units: ele.unit })
-//             .returning("*")
-//             .catch( err => {
-//                 console.log(err);
-//             })
-//         }
-//     })
 }
             
 

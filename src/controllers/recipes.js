@@ -28,7 +28,7 @@ function getOne(req, res, next) {
 }
 
 function create(req, res, next) {
-    if (!req.body.name || !req.body.instructions || !req.body.user_id) {
+    if (!req.body.name || !req.body.instructions || !req.body.user_id || !req.body.ingredientsArray) {
         return next({
             status: 400,
             message: 'Missing recipe creation fields'

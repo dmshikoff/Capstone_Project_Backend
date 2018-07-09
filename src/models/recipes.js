@@ -23,7 +23,15 @@ function getOne(recipeId) {
 }
 
 function create(body) {
-    console.log(body)
+    return createRecipe(body)
+    .then(response => {
+        recipe_id = response.id
+        createRecipeIngredient(recipe_id, body)
+    })
+    
+}
+
+function createRecipe(body) {
     return knex('recipes')
         .insert({
             name: body.name,
@@ -31,10 +39,59 @@ function create(body) {
             user_id: body.user_id
         })
         .returning("*")
+        .then(([data])=>data)
+        // .then(response => {
+        //     recipe_id = response.data.id
+        // })
         .catch(err => {
             console.log(err);
         })
 }
+
+function createRecipeIngredient(recipe_id, body){
+
+    const recipe_ids = body.ingredientsArray.map(ele => {
+        if(!ele.id){
+            return knex('ingredients')
+            .insert({ name: ele.name, units: ele.unit, user_id: body.user_id })
+            .returning("*")
+            .then(([ingredient]) => ({ingredient_id:ingredient.id, units:ingredient.units, quantity: ele.qty}))
+        }
+        else {
+            return Promise.resolve({ingredient_id:ele.id, units:ele.unit, quantity: ele.qty})
+        }
+    })
+
+    Promise.all(recipe_ids).then(arr => {
+        return knex('recipes_ingredients')
+        .insert(arr.reduce((acc, ele) => [...acc, ele],[]).map(ele => ({ recipe_id, ...ele})))
+        .returning("*")
+        .catch(err => {
+            console.log(err)
+        })
+    })
+
+//    body.ingredientsArray.map(ele => {
+//        if(!ele.id){
+//         return knex('ingredients')
+//             .insert({ name: ele.name, units, units: ele.unit, user_id: body.user_id })
+//             .returning("*")
+//             .then(console.log)
+//             .catch(err => {
+//                 console.log(err);
+//             })
+//         }
+//         else{
+//             return knex('recipes_ingredients')
+//             .insert({ ingredient_id: ele.id, recipe_id: recipe_id, quantity: ele.qty, units: ele.unit })
+//             .returning("*")
+//             .catch( err => {
+//                 console.log(err);
+//             })
+//         }
+//     })
+}
+            
 
 function update(recipeId, name, instructions) {
     const toUpdate = {}

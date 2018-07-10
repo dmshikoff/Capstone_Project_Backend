@@ -1,6 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/plans');
-const router = express.Router();
+const router = express.Router({mergeParams:true});
 
 router.get('/', controller.getAll);
 router.get('/:planId', controller.getOne);

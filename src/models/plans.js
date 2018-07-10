@@ -23,15 +23,45 @@ function getOne(planId) {
 }
 
 function create(body) {
+    return createPlan(body.name, body.user_id)
+        .then(([response]) => {
+            console.log(response)
+            let plan_id = response.id
+            return createPlan_Recipe(plan_id, body.week)
+        })
+}
+
+function createPlan(name, user_id) {
     return knex('plans')
         .insert({
-            name: body.name,
-            user_id: body.user_id
+            name,
+            user_id
         })
         .returning("*")
         .catch(err => {
-            console.log(err);
+            console.log(err)
         })
+}
+
+function createPlan_Recipe(plan_id, week) {
+    let result = []
+    for (let day in week) {
+        result = result.concat(week[day].map(ele => {
+            if (ele.id) {
+                return knex('plans_recipes')
+                    .insert({
+                        plan_id,
+                        recipe_id: Number(ele.id),
+                        day: day
+                    })
+                    .returning("*")
+                    .catch(err => {
+                        console.log(err)
+                    })
+            }
+        }))
+    }
+    return Promise.all(result)
 }
 
 function update(planId, name) {

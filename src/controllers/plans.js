@@ -27,7 +27,7 @@ function getOne(req, res, next) {
 }
 
 function create(req, res, next) {
-    if (!req.body.name || !req.body.user_id) {
+    if (!req.body.name || !req.body.week || !req.body.user_id) {
         return next({
             status: 400,
             message: 'Missing recipe creation fields'
@@ -35,7 +35,7 @@ function create(req, res, next) {
     }
 
     planModel.create(req.body)
-        .then(function (data) {
+        .then(function ([data]) {
 
             return res.status(201).send({
                 data

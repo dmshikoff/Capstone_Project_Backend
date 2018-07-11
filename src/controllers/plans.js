@@ -17,8 +17,7 @@ function getOne(req, res, next) {
         })
     }
     planModel.getOne(req.params.planId)
-        .then(data => {
-            delete data.password
+        .then(([data]) => {
             res.status(200).send({
                 data
             })

@@ -26,6 +26,22 @@ function getOne(req, res, next) {
         .catch(next)
 }
 
+function getPlannedRecipesByDay(req, res, next){
+    if(!req.params.usersId || !req.params.plansId) {
+        return next({
+            status: 400,
+            message: 'Bad Request'
+        })
+    }
+    recipeModel.getPlannedRecipesByDay(req.params.usersId, req.params.plansId)
+        .then(data => {
+            res.status(200).send({
+                data
+            })
+        })
+        .catch(next)
+}
+
 function create(req, res, next) {
     if (!req.body.name || !req.body.instructions || !req.body.user_id || !req.body.ingredientsArray) {
         return next({
@@ -73,6 +89,7 @@ function remove(req, res, next) {
 module.exports = {
     getAll,
     getOne,
+    getPlannedRecipesByDay,
     create,
     update,
     remove

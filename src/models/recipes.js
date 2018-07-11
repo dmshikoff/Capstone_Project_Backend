@@ -23,6 +23,17 @@ function getOne(recipeId, usersId) {
         })
 }
 
+function getPlannedRecipesByDay(usersId, plansId) {
+    return knex('plans')
+        .join('plans_recipes', 'plans_recipes.plan_id', 'plans.id')
+        .join('recipes', 'recipes.id', 'plans_recipes.recipe_id')
+        .where('plans_recipes.plan_id', plansId)
+        .select("day", "recipes.name as name", "plans.id as plan_id", "recipes.id as recipe_id")
+        .catch(err => {
+            console.log(err)
+        })
+}
+
 function create(body) {
     return createRecipe(body)
     .then(response => {
@@ -106,6 +117,7 @@ function remove(recipeId) {
 module.exports = {
     getAll,
     getOne,
+    getPlannedRecipesByDay,
     create,
     update,
     remove

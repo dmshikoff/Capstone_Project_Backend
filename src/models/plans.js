@@ -25,7 +25,6 @@ function getOne(planId) {
 function create(body) {
     return createPlan(body.name, body.user_id)
         .then(([response]) => {
-            console.log(response)
             let plan_id = response.id
             return createPlan_Recipe(plan_id, body.week)
         })

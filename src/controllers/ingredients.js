@@ -20,6 +20,16 @@ function getAllByUser(req, res, next){
         .catch(next)
 }
 
+function getAllOnHand(req, res, next){
+    ingredientModel.getAllOnHand(req.params.usersId)
+        .then(allIngredients => {
+            res.status(200).send({
+                allIngredients
+            })
+        })
+        .catch(next)
+}
+
 function getOne(req, res, next) {
     if (!req.params.ingredientId) {
         return next({
@@ -38,17 +48,15 @@ function getOne(req, res, next) {
 }
 
 function create(req, res, next) {
-    if (!req.body.name || !req.body.quantity || !req.body.units || !req.body.user_id) {
+    if (!req.body.name || !req.body.quantity || !req.body.unit || !req.body.user_id) {
         return next({
             status: 400,
-            message: 'Missing recipe creation fields'
+            message: 'Missing ingredient creation fields'
         })
     }
-
     ingredientModel.create(req.body)
-        .then(function (data) {
-
-            return res.status(201).send({
+        .then(data => {
+            res.status(201).send({
                 data
             })
         })
@@ -84,6 +92,7 @@ function remove(req, res, next) {
 module.exports = {
     getAllByRecipe,
     getAllByUser,
+    getAllOnHand,
     getOne,
     create,
     update,

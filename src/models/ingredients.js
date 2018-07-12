@@ -69,11 +69,12 @@ const create = async function(body) {
         }
         else {
     
-            const newIngredient = createIngredient(body.name, body.unit, body.user_id)
-            return  await knex('users_ingredients')
+            const newIngredient = await createIngredient(body.name, body.unit, body.user_id)
+            console.log(newIngredient)
+            return await knex('users_ingredients')
                             .insert({
                                 user_id: body.user_id,
-                                ingredient_id: newIngredient.id,
+                                ingredient_id: newIngredient[0].id,
                                 quantity: body.quantity
                             })
                             .returning("*")
@@ -141,10 +142,23 @@ function update(ingredientId, name, quantity, units) {
         })
 }
 
-function remove(ingredientId) {
-    return knex('ingredients')
+const removeSome = async function(body){
+    const userIngredients = await getAllByUser(body.user_id)
+    const userIngredient = userIngredients.find(ele => ele.name === body.name)
+    const convertedQuantity = convert(body.quantity).from(body.unit).to(userIngredient.units)
+    const newQuantity = Number(userIngredient.quantity) - (convertedQuantity)
+    if(newQuantity <= 0){
+        return await removeUserIngredient(userIngredient.id)
+    }
+    else{
+        return await updateUserIngredients(newQuantity, body.user_id, body.id, userIngredient.id)
+    }
+}
+
+function removeUserIngredient(id) {
+    return knex('users_ingredients')
         .where({
-            id: ingredientId
+            id
         })
         .del()
         .returning('*')
@@ -160,5 +174,6 @@ module.exports = {
     getOne,
     create,
     update,
-    remove
+    removeSome,
+    removeUserIngredient
 }

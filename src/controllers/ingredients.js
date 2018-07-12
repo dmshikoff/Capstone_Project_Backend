@@ -79,6 +79,22 @@ function update(req, res, next) {
         .catch(next)
 }
 
+function removeSome(req, res, next) {
+    if (!req.body.name || !req.body.quantity || !req.body.unit || !req.body.user_id || !req.body.id) {
+        return next({
+            status: 400,
+            message: 'Missing ingredient creation fields'
+        })
+    }
+    ingredientModel.removeSome(req.body)
+        .then(data => {
+            res.status(201).send({
+                data
+            })
+        })
+        .catch(next)
+}
+
 function remove(req, res, next) {
     ingredientModel.remove(parseInt(req.params.ingredientId))
         .then(function (data) {
@@ -96,5 +112,6 @@ module.exports = {
     getOne,
     create,
     update,
+    removeSome,
     remove
 }

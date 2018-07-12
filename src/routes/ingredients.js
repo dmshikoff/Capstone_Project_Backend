@@ -6,6 +6,7 @@ router.get('/', controller.getAllByUser);
 router.get('/onHand', controller.getAllOnHand);
 router.get('/:ingredientId', controller.getOne);
 router.post('/', controller.create);
+router.post('/remove', controller.removeSome);
 router.put('/:ingredientId', controller.update);
 router.delete('/:ingredientId', controller.remove);
 

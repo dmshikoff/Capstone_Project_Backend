@@ -23,7 +23,7 @@ function getOne(recipeId, usersId) {
         })
 }
 
-function getPlannedRecipesByDay(usersId, plansId) {
+function getPlannedRecipesByDay(plansId) {
     return knex('plans')
         .join('plans_recipes', 'plans_recipes.plan_id', 'plans.id')
         .join('recipes', 'recipes.id', 'plans_recipes.recipe_id')

@@ -33,7 +33,7 @@ function getPlannedRecipesByDay(req, res, next){
             message: 'Bad Request'
         })
     }
-    recipeModel.getPlannedRecipesByDay(req.params.usersId, req.params.plansId)
+    recipeModel.getPlannedRecipesByDay(req.params.plansId)
         .then(data => {
             res.status(200).send({
                 data

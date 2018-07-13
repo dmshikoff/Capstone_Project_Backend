@@ -5,7 +5,7 @@ function getAllByRecipe(recipe_id) {
     return knex('recipes_ingredients')
         .join("ingredients", "ingredients.id", "recipes_ingredients.ingredient_id")
         .where("recipes_ingredients.recipe_id", recipe_id)
-        .select("recipes_ingredients.units as units", "quantity", "name")
+        .select("recipes_ingredients.units as units", "quantity", "name", "ingredients.id as id", "ingredients.units as ingredients_units")
         .catch(err => {
             console.log(err)
         })
@@ -15,7 +15,7 @@ function getAllByUser(user_id) {
     return knex('users_ingredients')
         .join('ingredients', 'ingredients.id', 'users_ingredients.ingredient_id')
         .where('users_ingredients.user_id', user_id)
-        .select("quantity", "name", "units", "users_ingredients.id as id")
+        .select("quantity", "name", "ingredients.units as ingredients_units", "users_ingredients.id as id", "ingredients.id as ingredient_id")
         .catch(err => {
             console.log(err)
         })
@@ -175,5 +175,6 @@ module.exports = {
     create,
     update,
     removeSome,
-    removeUserIngredient
+    removeUserIngredient,
+    updateUserIngredients
 }

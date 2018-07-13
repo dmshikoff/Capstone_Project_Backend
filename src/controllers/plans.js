@@ -1,4 +1,11 @@
 const planModel = require('../models/plans');
+var mailgun = require("mailgun-js");
+var api_key = 'f771b643ed56704d798fedf32bd8009d-8b7bf2f1-603778cc';
+var DOMAIN = 'canicookit.fun';
+var mailgun = require('mailgun-js')({
+    apiKey: api_key,
+    domain: DOMAIN
+});
 
 function getAll(req, res, next) {
     planModel.getAll(req.params.usersId)
@@ -43,6 +50,39 @@ function create(req, res, next) {
         .catch(next)
 }
 
+function groceryList(req, res, next) {
+    if (!req.params.usersId || !req.params.planId) {
+        return next({
+            status: 400,
+            message: 'Bad Request'
+        })
+    }
+    planModel.groceryList(req.params.usersId, req.params.planId)
+        .then(data => {
+            res.status(200).send({
+                data
+            })
+        })
+        .catch(next)
+
+}
+
+function implementPlan(req, res, next) {
+    if (!req.params.usersId || !req.params.planId) {
+        return next({
+            status: 400,
+            message: 'Bad Request'
+        })
+    }
+    planModel.implementPlan(req.params.usersId, req.params.planId)
+        .then(data => {
+            res.status(200).send({
+                data
+            })
+        })
+        .catch(next)
+}
+
 function update(req, res, next) {
     if (!req.params.planId) {
         return next({
@@ -69,10 +109,27 @@ function remove(req, res, next) {
         .catch(next)
 }
 
+function email(req, res, next) {
+    console.log(req.body.listString)
+    var data = {
+        from: 'Excited User <me@samples.mailgun.org>',
+        to: 'dmshikoff@gmail.com',
+        subject: 'CICI Grocery List',
+        html: req.body.listString
+    };
+
+    mailgun.messages().send(data, function (error, body) {
+        console.log(body);
+    });
+}
+
 module.exports = {
     getAll,
     getOne,
     create,
+    groceryList,
+    implementPlan,
     update,
-    remove
+    remove,
+    email
 }

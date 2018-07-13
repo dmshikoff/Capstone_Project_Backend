@@ -4,7 +4,9 @@ const router = express.Router({mergeParams:true});
 
 router.get('/', controller.getAll);
 router.get('/:planId', controller.getOne);
-reouter.get('/:planId/implement', controller.implementPlan)
+router.get('/:planId/groceryList', controller.groceryList)
+router.get('/:planId/implement', controller.implementPlan)
+router.post('/:planId/email', controller.email)
 router.post('/', controller.create);
 router.put('/:planId', controller.update);
 router.delete('/:planId', controller.remove);

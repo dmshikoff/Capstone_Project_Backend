@@ -93,12 +93,20 @@ const groceryList = async function(userId, planId){
 
     const converted = recipeIngredients.map(rIngredient => {
         const userIngredient = usersIngredients.find(ele => ele.name === rIngredient.name)
-        const convertedIngredient = convert(rIngredient.quantity).from(rIngredient.units).to(rIngredient.ingredients_units)
+        let convertedIngredient;
+        if(rIngredient.units !== "count"){
+            convertedIngredient = convert(rIngredient.quantity).from(rIngredient.units).to(rIngredient.ingredients_units)
+        }
+        
         const newQuantity = Number(userIngredient.quantity) - Number(convertedIngredient)
         return {quantity: newQuantity, user_id: userId, ingredient_id: userIngredient.ingredient_id, userIngredientId: userIngredient.id, name: userIngredient.name, unit: rIngredient.units}
     })
     return converted    
 }
+
+
+
+
 
 const implementPlan = async function(userId, planId){
     const recipesByDay = await recipeModel.getPlannedRecipesByDay(planId)
@@ -110,13 +118,30 @@ const implementPlan = async function(userId, planId){
     let recipeIngredients = await Promise.all(ingredients)
     recipeIngredients = [].concat.apply([], recipeIngredients)
 
+    recipeIngredients = recipeIngredients.reduce((acc,ele) => {
+        if(acc.hasOwnProperty(ele.name)){
+            acc[ele.name].quantity = parseFloat(acc[ele.name].quantity) + parseFloat(ele.quantity)
+        }
+        else{
+            acc[ele.name] = ele
+        }
+        
+        return acc
+    }, {})
+
+    recipeIngredients = Object.values(recipeIngredients)
+
     const usersIngredients = await ingredientModel.getAllByUser(userId)
 
     const converted = recipeIngredients.map(rIngredient => {
         const userIngredient = usersIngredients.find(ele => ele.name === rIngredient.name)
-        const convertedIngredient = convert(rIngredient.quantity).from(rIngredient.units).to(userIngredient.units)
+        let convertedIngredient;
+        if(rIngredient.units !== "count"){
+            convertedIngredient = convert(rIngredient.quantity).from(rIngredient.units).to(rIngredient.ingredients_units)
+        }
+        
         const newQuantity = Number(userIngredient.quantity) - Number(convertedIngredient)
-        return {quantity: newQuantity, user_id: userId, ingredient_id: userIngredient.ingredient_id, userIngredientId: userIngredient.id, name: userIngredient.name, unit: userIngredient.units}
+        return {quantity: newQuantity, user_id: userId, ingredient_id: userIngredient.ingredient_id, userIngredientId: userIngredient.id, name: userIngredient.name, unit: rIngredient.units}
     })
     let newUserIngredients = converted.map(async(ele) => {
         return await ingredientModel.updateUserIngredients(ele.quantity, ele.user_id, ele.ingredient_id, ele.userIngredientId)

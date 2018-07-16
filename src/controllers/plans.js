@@ -1,7 +1,7 @@
 const planModel = require('../models/plans');
 var mailgun = require("mailgun-js");
-var api_key = 'f771b643ed56704d798fedf32bd8009d-8b7bf2f1-603778cc';
-var DOMAIN = 'canicookit.fun';
+var api_key = '';
+var DOMAIN = '';
 var mailgun = require('mailgun-js')({
     apiKey: api_key,
     domain: DOMAIN

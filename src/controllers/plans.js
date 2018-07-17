@@ -110,10 +110,9 @@ function remove(req, res, next) {
 }
 
 function email(req, res, next) {
-    console.log(req.body.email)
     var data = {
         from: 'CICI <me@samples.mailgun.org>',
-        to: 'dmshikoff@gmail.com',
+        to: req.body.email,
         subject: 'CICI Grocery List',
         html: req.body.listString
     };

@@ -145,7 +145,8 @@ function update(ingredientId, name, quantity, units) {
 const removeSome = async function(body){
     const userIngredients = await getAllByUser(body.user_id)
     const userIngredient = userIngredients.find(ele => ele.name === body.name)
-    const convertedQuantity = convert(body.quantity).from(body.unit).to(userIngredient.units)
+    console.log(userIngredient)
+    const convertedQuantity = convert(body.quantity).from(body.unit).to(userIngredient.ingredients_units)
     const newQuantity = Number(userIngredient.quantity) - (convertedQuantity)
     if(newQuantity <= 0){
         return await removeUserIngredient(userIngredient.id)

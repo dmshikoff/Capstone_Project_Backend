@@ -47,26 +47,31 @@ function createPlan(name, user_id) {
 
 function createPlan_Recipe(plan_id, week) {
     let result = []
+    let recipesToAdd = []
     for (let day in week) {
-        result = result.concat(week[day].map(ele => {
+        week[day].map(ele => {
             if (ele.id) {
-                return knex('plans_recipes')
-                    .insert({
-                        plan_id,
-                        recipe_id: Number(ele.id),
-                        day: day
-                    })
-                    .returning("*")
-                    .catch(err => {
-                        console.log(err)
-                    })
+                ele.day = day
+                recipesToAdd.push(ele)
             }
-        }))
+        })
     }
+    result = recipesToAdd.map(ele => {
+        return knex('plans_recipes')
+                .insert({
+                    plan_id,
+                    recipe_id: Number(ele.id),
+                    day: ele.day
+                })
+                .returning("*")
+                .catch(err => {
+                    console.log(err)
+                })
+    })
     return Promise.all(result)
 }
 
-const groceryList = async function(userId, planId){
+const groceryList = async function (userId, planId) {
     const recipesByDay = await recipeModel.getPlannedRecipesByDay(planId)
 
     const ingredients = recipesByDay.map(async (ele) => {
@@ -76,14 +81,13 @@ const groceryList = async function(userId, planId){
     let recipeIngredients = await Promise.all(ingredients)
     recipeIngredients = [].concat.apply([], recipeIngredients)
 
-    recipeIngredients = recipeIngredients.reduce((acc,ele) => {
-        if(acc.hasOwnProperty(ele.name)){
+    recipeIngredients = recipeIngredients.reduce((acc, ele) => {
+        if (acc.hasOwnProperty(ele.name)) {
             acc[ele.name].quantity = parseFloat(acc[ele.name].quantity) + parseFloat(ele.quantity)
-        }
-        else{
+        } else {
             acc[ele.name] = ele
         }
-        
+
         return acc
     }, {})
 
@@ -94,21 +98,30 @@ const groceryList = async function(userId, planId){
     const converted = recipeIngredients.map(rIngredient => {
         const userIngredient = usersIngredients.find(ele => ele.name === rIngredient.name)
         let convertedIngredient;
-        if(rIngredient.units !== "count"){
+        if (rIngredient.units !== "count") {
             convertedIngredient = convert(rIngredient.quantity).from(rIngredient.units).to(rIngredient.ingredients_units)
         }
-        
+
         const newQuantity = Number(userIngredient.quantity) - Number(convertedIngredient)
-        return {quantity: newQuantity, user_id: userId, ingredient_id: userIngredient.ingredient_id, userIngredientId: userIngredient.id, name: userIngredient.name, unit: rIngredient.units}
+        return {
+            quantity: newQuantity,
+            user_id: userId,
+            ingredient_id: userIngredient.ingredient_id,
+            userIngredientId: userIngredient.id,
+            name: userIngredient.name,
+            unit: rIngredient.units
+        }
     })
-    return converted    
+    return converted.filter(ele => {
+       return ele.quantity < 0
+    })
 }
 
 
 
 
 
-const implementPlan = async function(userId, planId){
+const implementPlan = async function (userId, planId) {
     const recipesByDay = await recipeModel.getPlannedRecipesByDay(planId)
 
     const ingredients = recipesByDay.map(async (ele) => {
@@ -118,14 +131,13 @@ const implementPlan = async function(userId, planId){
     let recipeIngredients = await Promise.all(ingredients)
     recipeIngredients = [].concat.apply([], recipeIngredients)
 
-    recipeIngredients = recipeIngredients.reduce((acc,ele) => {
-        if(acc.hasOwnProperty(ele.name)){
+    recipeIngredients = recipeIngredients.reduce((acc, ele) => {
+        if (acc.hasOwnProperty(ele.name)) {
             acc[ele.name].quantity = parseFloat(acc[ele.name].quantity) + parseFloat(ele.quantity)
-        }
-        else{
+        } else {
             acc[ele.name] = ele
         }
-        
+
         return acc
     }, {})
 
@@ -136,14 +148,21 @@ const implementPlan = async function(userId, planId){
     const converted = recipeIngredients.map(rIngredient => {
         const userIngredient = usersIngredients.find(ele => ele.name === rIngredient.name)
         let convertedIngredient;
-        if(rIngredient.units !== "count"){
+        if (rIngredient.units !== "count") {
             convertedIngredient = convert(rIngredient.quantity).from(rIngredient.units).to(rIngredient.ingredients_units)
         }
-        
+
         const newQuantity = Number(userIngredient.quantity) - Number(convertedIngredient)
-        return {quantity: newQuantity, user_id: userId, ingredient_id: userIngredient.ingredient_id, userIngredientId: userIngredient.id, name: userIngredient.name, unit: rIngredient.units}
+        return {
+            quantity: newQuantity,
+            user_id: userId,
+            ingredient_id: userIngredient.ingredient_id,
+            userIngredientId: userIngredient.id,
+            name: userIngredient.name,
+            unit: rIngredient.units
+        }
     })
-    let newUserIngredients = converted.map(async(ele) => {
+    let newUserIngredients = converted.map(async (ele) => {
         return await ingredientModel.updateUserIngredients(ele.quantity, ele.user_id, ele.ingredient_id, ele.userIngredientId)
     })
     newUserIngredients = await Promise.all(newUserIngredients)

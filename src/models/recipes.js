@@ -48,7 +48,7 @@ function createRecipe(body) {
         .insert({
             name: body.name,
             instructions: body.instructions,
-            user_id: body.user_id
+            user_id: Number(body.user_id)
         })
         .returning("*")
         .then(([data])=>data)
@@ -62,7 +62,7 @@ function createRecipeIngredient(recipe_id, body){
     const recipe_ids = body.ingredientsArray.map(ele => {
         if(!ele.id){
             return knex('ingredients')
-            .insert({ name: ele.name, units: ele.unit, user_id: body.user_id })
+            .insert({ name: ele.name, units: ele.unit, user_id: Number(body.user_id) })
             .returning("*")
             .then(([ingredient]) => ({ingredient_id:ingredient.id, units:ingredient.units, quantity: ele.qty}))
         }

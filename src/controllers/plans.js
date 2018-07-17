@@ -1,7 +1,7 @@
 const planModel = require('../models/plans');
 var mailgun = require("mailgun-js");
-var api_key = '';
-var DOMAIN = '';
+var api_key = process.env.APIKEY;
+var DOMAIN = process.env.DOMAIN;
 var mailgun = require('mailgun-js')({
     apiKey: api_key,
     domain: DOMAIN

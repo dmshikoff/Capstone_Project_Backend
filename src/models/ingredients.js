@@ -146,8 +146,16 @@ const removeSome = async function(body){
     const userIngredients = await getAllByUser(body.user_id)
     const userIngredient = userIngredients.find(ele => ele.name === body.name)
     console.log(userIngredient)
-    const convertedQuantity = convert(body.quantity).from(body.unit).to(userIngredient.ingredients_units)
-    const newQuantity = Number(userIngredient.quantity) - (convertedQuantity)
+    let convertedQuantity;
+    let newQuantity;
+    if(userIngredient.ingredients_units !== 'count'){
+        convertedQuantity = convert(body.quantity).from(body.unit).to(userIngredient.ingredients_units)
+        newQuantity = Number(userIngredient.quantity) - (convertedQuantity)
+    }
+    else{
+        newQuantity = Number(userIngredient.quantity) - (body.quantity)
+    }
+    
     if(newQuantity <= 0){
         return await removeUserIngredient(userIngredient.id)
     }

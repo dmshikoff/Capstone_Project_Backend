@@ -22,6 +22,20 @@
 * Migrate the database: `npm run knex migrate:latest`
 * Seed the database: `npm run knex seed:run`
 
+## Technologies Used
+
+* JavaScript
+* bCrypt
+* body-parser
+* convert-units NPM Package
+* cors
+* dotenv
+* knex
+* jsonwebtoken
+* express.js
+* mailgun
+* postgreSQL
+
 ## Databases
 
 By default, project is configured to connect to a PostgreSQL database using Knex.
